@@ -13,34 +13,41 @@
 </head>
 <body>
     <div class="content">
-        <div>
-            <a class="btn btn-primary" href="/AliVideo/add">添加</a>
+        <div  style="margin:20px 10px;">
+            <a class="btn btn-primary btn-sm" href="/AliVideo/add">添加</a>
         </div>
         <div>
             <table class="table">
                 <tr>
-                    <td>视频ID</td>
-                    <td>视频名称</td>
-                    <td>课程类型</td>
-                    <td>科目</td>
-                    <td>视频大小（M）</td>
-                    <td>视频时长</td>
-                    <td>播放次数</td>
-                    <td>原始地址</td>
-                    <td>播放地址</td>
-                    <td>上传时间</td>
-                    <td>视频状态</td>
+                    <td></td>
+                    <td>CateName</td>
+                    <td>CreationTime</td>
+                    <td>Description</td>
+                    <td>Size</td>
+                    <td>Status</td>
+                    <td>Title</td>
                     <td>操作</td>
                 </tr>
+              @{ int index = 0;}
+                @foreach (var item in ViewBag.list)
+                {
+                    index++;
                 <tr>
-                    <td>dfd</td>
-                    <td>dfd</td>
-                    <td>dfd</td>
-                    <td>dfd</td>
-                    <td>dfd</td>
-                    <td>dfd</td>
-                    <td>dfd</td>
+                    <td>@index</td>
+                    <td>@item.CateName</td>
+                    <td>@item.CreationTime</td>
+                    <td>@item.Description</td>
+                    <td>@item.Size</td>
+                    <td>@item.Status</td>
+                    <td>@item.Title</td>
+                    <td>
+                        <a href="/alivideo/play/@item.VideoId" class="btn btn-primary btn-sm">播放</a>
+                        <a href="/alivideo/del/@item.VideoId" class="btn btn-warning btn-sm">删除</a>
+                    </td>
+
+
                 </tr>
+                }
             </table>
         </div>
 
