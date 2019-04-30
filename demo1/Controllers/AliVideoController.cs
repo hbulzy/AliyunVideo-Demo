@@ -1,5 +1,6 @@
 ﻿using Aliyun.Acs.vod.Model.V20170321;
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace demo1.Controllers
@@ -16,7 +17,7 @@ namespace demo1.Controllers
             GetVideoListRequest request = new GetVideoListRequest();
             request.PageNo = 1;
             request.PageSize = 20;
-            ViewBag.list= aliServer.GetVideoList(request).VideoList;
+            ViewBag.list = aliServer.GetVideoList(request).VideoList;
             return View();
         }
         /// <summary>
@@ -57,6 +58,24 @@ namespace demo1.Controllers
             var res = aliServer.RefreshUploadVideo(d);
             return Json(res, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult AddImg(CreateUploadImageRequest request)
+        {
+            return View();
+        }
+        public ActionResult CreateUploadImage(CreateUploadImageRequest request)
+        {
+            var res = aliServer.CreateUploadImage(request);
+            GetImageInfoResponse imgInfo = aliServer.GetImageInfo(res.ImageId);
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+            dic.Add("auth", res);
+            dic.Add("imginfo", imgInfo);
+            return Json(dic, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DeleteImage(string imgUrls)
+        {
+            aliServer.DeleteImage(imgUrls);
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 阿里视频上传完后的回调
         /// </summary>
@@ -75,6 +94,16 @@ namespace demo1.Controllers
             System.IO.File.WriteAllText(Server.MapPath("/VideoId.txt"), string.Join("|\r\n", list));
 
             return Content("ok");
+        }
+        public ActionResult GetPlayUrls()
+        {
+          var d=  aliServer.GetPlayInfo(new GetPlayInfoRequest() { VideoId = "b967f18331784062b4a677ff29b14925" });
+            var s = "";
+            foreach (var item in d.PlayInfoList)
+            {
+                s += "|"+item.PlayURL;
+            }
+            return Content(s);
         }
     }
     public class AliResponse

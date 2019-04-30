@@ -18,7 +18,7 @@
         使用 UploadAuth  方式上传:
         <div class="upload">
             <div>
-                <input type="file" id="fileUpload">
+                <input type="image" id="fileUpload">
                 <label class="status">上传状态: <span id="status"></span></label>
             </div>
             <div class="upload-type">
@@ -29,6 +29,9 @@
                 <span class="progress">上传进度: <i id="auth-progress">0</i> %</span>
                 <span></span>
             </div>
+            <div>
+                <img id="img" src="#" alt="Alternate Text" />
+            </div>
         </div>
     </div>
     <script>
@@ -38,6 +41,7 @@
          * 使用 UploadAuth 上传方式
          */
         function createUploader() {
+            var img = "";
             var uploader = new AliyunUpload.Vod({
                 timeout:  60000,//请求过期时间
                 partSize: 1048576,//分片大小
@@ -48,50 +52,34 @@
                 userId: "1048573540209196",
                 // 添加文件成功
                 addFileSuccess: function (uploadInfo) {
+                    console.log(uploadInfo)
                     $('#authUpload').attr('disabled', false); $('#resumeUpload').attr('disabled', false)
                     $('#status').text('添加文件成功, 等待上传...')
                 },
                 // 开始上传
                 onUploadstarted: function (uploadInfo) {
-                    if (!uploadInfo.videoId) {
-                      
-                        //调用自己编写的CreateUploadVideo接口，服务端调取阿里返回视频上传地址和凭证
-                        var createUrl = serverRoot + '/AliVideo/CreateUploadVideo';//CreateUploadImage
+                        var createUrl = serverRoot + '/AliVideo/CreateUploadImage';//CreateUploadImage
                         //加入参数
-                        createUrl += "?Action=CreateUploadVideo";
+                        createUrl += "?Action=CreateUploadImage";
+                        createUrl += "&ImageType=default";
                         createUrl += "&Title=" + uploadInfo.file.name;
-                        createUrl += "&FileName=" + uploadInfo.file.name;//视频源文件名 必须带扩展名，且扩展名不区分大小写。
-                        createUrl += "&FileSize=" + uploadInfo.file.size;
-                       // createUrl += "&Description=xx";
-                       // createUrl += "&CoverURL=xx";//自定义视频封面URL地址。
-                      //  createUrl += "&CateId=xx";//视频分类ID
-                       // createUrl += "&Tags=xx"; //视频标签。  最多不超过16个标签 多个用逗号分隔。 单个标签不超过32个字符或汉字。
-                          
+                      
+
                         $.get(createUrl, function (data) {
-                            var uploadAuth = data.UploadAuth
-                            var uploadAddress = data.UploadAddress
-                            var videoId = data.VideoId
-                            uploader.setUploadAuthAndAddress(uploadInfo, uploadAuth, uploadAddress, videoId)
+                            var uploadAuth = data.auth.UploadAuth
+                            var uploadAddress = data.auth.UploadAddress
+                            var ImageId = data.auth.ImageId;
+                            uploader.setUploadAuthAndAddress(uploadInfo, uploadAuth, uploadAddress, ImageId);
+                           img=data.imginfo.ImageInfo.URL;
                         }, 'json')
                         $('#status').text('文件开始上传...')
-                    } else {
-                        // 如果videoId有值，根据videoId刷新上传凭证
-                        var refreshUrl = serverRoot + '/AliVideo/RefreshUploadVideo';
-                        refreshUrl += "?VideoId=" + uploadInfo.videoId;
-
-                        $.get(refreshUrl, function (data) {
-                            var uploadAuth = data.UploadAuth
-                            var uploadAddress = data.UploadAddress
-                            var videoId = data.VideoId
-                            uploader.setUploadAuthAndAddress(uploadInfo, uploadAuth, uploadAddress, videoId)
-                        }, 'json')
-                    }
                 },
                 // 文件上传成功
                 onUploadSucceed: function (uploadInfo) {
                     console.log("onUploadSucceed: " + uploadInfo.file.name + ", endpoint:" + uploadInfo.endpoint + ", bucket:" + uploadInfo.bucket + ", object:" + uploadInfo.object)
                     console.log(uploadInfo);
-                    $('#status').text('文件上传成功!')
+                    $('#status').text('文件上传成功!');
+                    $("#img").attr("src",img)
                 },
                 // 文件上传失败
                 onUploadFailed: function (uploadInfo, code, message) {
@@ -112,18 +100,7 @@
                 },
                 // 上传凭证超时
                 onUploadTokenExpired: function (uploadInfo) {
-                    // 上传大文件超时, 如果是上传方式一即根据 UploadAuth 上传时
-                    // 需要根据 uploadInfo.videoId 调用刷新视频上传凭证接口(https://help.aliyun.com/document_detail/55408.html)重新获取 UploadAuth
-                    // 然后调用 resumeUploadWithAuth 方法
-                    $('#status').text('文件上传超时!')
-
-                    let refreshUrl = serverRoot + '/AliVideo/RefreshUploadVideo';
-                    refreshUrl += "?VideoId=" + uploadInfo.videoId;
-                    $.get(refreshUrl, function (data) {
-                        var uploadAuth = data.UploadAuth
-                        uploader.resumeUploadWithAuth(uploadAuth)
-                        console.log('upload expired and resume upload with uploadauth ' + uploadAuth)
-                    }, 'json')
+                   
                 },
                 // 全部文件上传结束
                 onUploadEnd: function (uploadInfo) {

@@ -16,8 +16,8 @@ namespace demo1.AliyunAcs
         {
             // 初始化客户端
 
-            var aliyunAccessKeyID = "";
-            var aliyunAccessKeySecret = "";
+            var aliyunAccessKeyID = "LTAIwfLsOC3SeQyL";// "LTAIwfLsOC3SeQyL vNVNmRdjXpQcUgYIKISQ1CCULXABP8";    
+            var aliyunAccessKeySecret = "vNVNmRdjXpQcUgYIKISQ1CCULXABP8";// "vNVNmRdjXpQcUgYIKISQ1CCULXABP8";
             //cn-shanghai 国内，不用其它值
             IClientProfile clientProfile = DefaultProfile.GetProfile("cn-shanghai", aliyunAccessKeyID, aliyunAccessKeySecret);
             acsClient = new DefaultAcsClient(clientProfile);
@@ -141,6 +141,8 @@ namespace demo1.AliyunAcs
             return response;
         }
 
+
+       
         /// <summary>
         /// 获取图片上传地址和凭证
         /// </summary>
@@ -155,12 +157,57 @@ namespace demo1.AliyunAcs
             }
             catch (Exception ex)
             {
-                
+                throw;
             }
             return response;
         }
-
-
+        /// <summary>
+        /// 获取图片信息
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public GetImageInfoResponse GetImageInfo(string imgId)
+        {
+            GetImageInfoRequest request = new GetImageInfoRequest();
+            request.ImageId = imgId;
+            GetImageInfoResponse response = new GetImageInfoResponse();
+            try
+            {
+                response = acsClient.GetAcsResponse(request);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return response;
+        }
+        /// <summary>
+        /// 删除图片
+        /// </summary>
+        /// <param name="imgUrls">多个用,分割</param>
+        /// <returns></returns>
+        public void DeleteImage(string imgUrls)
+        {
+            DeleteImageRequest request = new DeleteImageRequest();
+            request.DeleteImageType = "ImageURL";
+            request.ImageURLs = imgUrls;
+            //根据ImageId删除图片文件
+            //request.DeleteImageType = "ImageId";
+            //request.ImageIds = "ImageId1,ImageId2";
+            //根据VideoId删除指定ImageType的图片文件
+            //request.DeleteImageType = "VideoId";
+            //request.VideoId = "VideoId";
+            //request.ImageType = "SpriteSnapshot";
+            DeleteImageResponse response = new DeleteImageResponse();
+            try
+            {
+                response = acsClient.GetAcsResponse(request);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         #endregion
 
         #region 媒资管理
