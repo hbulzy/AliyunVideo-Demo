@@ -16,8 +16,8 @@ namespace demo1.AliyunAcs
         {
             // 初始化客户端
 
-            var aliyunAccessKeyID = "LTAIwfLsOC3SeQyL";// "LTAIwfLsOC3SeQyL vNVNmRdjXpQcUgYIKISQ1CCULXABP8";    
-            var aliyunAccessKeySecret = "vNVNmRdjXpQcUgYIKISQ1CCULXABP8";// "vNVNmRdjXpQcUgYIKISQ1CCULXABP8";
+            var aliyunAccessKeyID = "";//     
+            var aliyunAccessKeySecret = "";// 
             //cn-shanghai 国内，不用其它值
             IClientProfile clientProfile = DefaultProfile.GetProfile("cn-shanghai", aliyunAccessKeyID, aliyunAccessKeySecret);
             acsClient = new DefaultAcsClient(clientProfile);

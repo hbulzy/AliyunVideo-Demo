@@ -105,6 +105,17 @@ namespace demo1.Controllers
             }
             return Content(s);
         }
+        /// <summary>
+        /// 获取视频信息
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetVideoInfo(string videoId)
+        { 
+            GetVideoInfoRequest req = new GetVideoInfoRequest() { VideoId = videoId };
+            var d = aliServer.GetVideoInfo(req);
+
+            return Json(d,JsonRequestBehavior.AllowGet);
+        }
     }
     public class AliResponse
     {

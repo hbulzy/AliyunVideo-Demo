@@ -130,6 +130,7 @@
     <Content Include="Views\AliVideo\Play.cshtml" />
     <Content Include="Views\AliVideo\AddImg.cshtml" />
     <Content Include="Views\AliVideo\GetPlayUrls.cshtml" />
+    <Content Include="Views\AliVideo\GetVideoInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

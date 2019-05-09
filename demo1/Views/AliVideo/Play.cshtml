@@ -15,13 +15,19 @@
     <script type="text/javascript" charset="utf-8" src="https://player.alicdn.com/aliplayer/presentation/js/aliplayercomponents.min.js"></script>
 
 </head>
-<body>
+<body onunload="goodbye()" >
     <div class="prism-player" id="J_prismPlayer"></div>
-    <script>
+     <script>
+        //存放当前观看的时长
+
+        var shij = 0;
+
         var player = new Aliplayer({
             id: 'J_prismPlayer',
             width: '500px',
             autoplay: true,
+            //加密类型，播放点播私有加密视频时，设置值为1，默认值为0。
+            encryptType:1,
             //支持播放地址播放,此播放优先级最高
           //  source: '播放url',
             //播放方式二：点播用户推荐
@@ -46,8 +52,18 @@
             //accessKeySecret: 'dd',
             //region: 'cn-shanghai',//eu-central-1,ap-southeast-1
         }, function (player) {
-            console.log('播放器创建好了。')
-        });
+                console.log('播放器创建好了。');
+                player.on('timeupdate', function (e) {
+                    shij = this.getCurrentTime();
+                   
+                });
+            });
+        player.seek(8);
+        window.onbeforeunload = function (e) {
+            var e = window.event || e;
+            e.returnValue = ("确定离开当前页面吗？");
+            console.log(shij)
+        } 
     </script>
 </body>
 </html>

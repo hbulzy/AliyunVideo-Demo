@@ -29,6 +29,9 @@
                 <span class="progress">上传进度: <i id="auth-progress">0</i> %</span>
                 <span></span>
             </div>
+            <div>
+                <a href="" id="show">查看视频信息</a>
+            </div>
         </div>
     </div>
     <script>
@@ -45,7 +48,7 @@
                 retryCount:  3,//网络失败重试次数
                 retryDuration: 2,//网络失败重试间隔
                 region: "cn-shanghai",//配置项 region eu-central-1,ap-southeast-1
-                userId: "1048573540209196",
+               // userId: "1048573540209196",
                 // 添加文件成功
                 addFileSuccess: function (uploadInfo) {
                     $('#authUpload').attr('disabled', false); $('#resumeUpload').attr('disabled', false)
@@ -61,7 +64,8 @@
                         createUrl += "?Action=CreateUploadVideo";
                         createUrl += "&Title=" + uploadInfo.file.name;
                         createUrl += "&FileName=" + uploadInfo.file.name;//视频源文件名 必须带扩展名，且扩展名不区分大小写。
-                        createUrl += "&FileSize=" + uploadInfo.file.size;
+                        createUrl += "&FileSize=" + uploadInfo.file.size; 
+                        createUrl += "&TemplateGroupId=39790e5f6d719a3b47ada4f6d29d4d77";  
                        // createUrl += "&Description=xx";
                        // createUrl += "&CoverURL=xx";//自定义视频封面URL地址。
                       //  createUrl += "&CateId=xx";//视频分类ID
@@ -91,7 +95,9 @@
                 onUploadSucceed: function (uploadInfo) {
                     console.log("onUploadSucceed: " + uploadInfo.file.name + ", endpoint:" + uploadInfo.endpoint + ", bucket:" + uploadInfo.bucket + ", object:" + uploadInfo.object)
                     console.log(uploadInfo);
-                    $('#status').text('文件上传成功!')
+                    $("#show").attr("href", "/alivideo/getvideoinfo?videoId=" + uploadInfo.videoId);
+                    $('#status').text('文件上传成功!');
+                    location.href = "/alivideo/getvideoinfo?videoId=" + uploadInfo.videoId;
                 },
                 // 文件上传失败
                 onUploadFailed: function (uploadInfo, code, message) {
